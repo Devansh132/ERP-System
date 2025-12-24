@@ -1,0 +1,32 @@
+.card {
+  border-radius: 0.5rem;
+}
+
+.avatar-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 36px;
+  font-size: 1.25rem;
+}
+
+.quick-actions .avatar-title {
+  font-size: 1.1rem;
+}
+
+.font-size-12 {
+  font-size: 12px !important;
+}
+
+.font-size-13 {
+  font-size: 13px !important;
+}
+
+.font-size-16 {
+  font-size: 16px !important;
+}
+
+.font-size-18 {
+  font-size: 18px !important;
+}
