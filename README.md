@@ -1,26 +1,101 @@
-# Skote -  Angular 13 Responsive Admin Dashboard Template 
+# School ERP System - Frontend (Angular)
 
-## Development server
+Angular 18 frontend application for the School ERP System, built with Skote Admin Template.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## 🚀 Project Overview
 
-## Code scaffolding
+This is the frontend application for a comprehensive School ERP System with three user roles:
+- **Admin**: Complete system management
+- **Teacher**: Class and student management
+- **Student**: Academic information access
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 📋 Technology Stack
 
-## Build
+- **Angular**: 18.2.11
+- **Bootstrap**: 5.3.3
+- **Skote Admin Template**: Responsive dashboard template
+- **RxJS**: Reactive programming
+- **NgRx**: State management
+- **Chart Libraries**: ApexCharts, Chart.js, ECharts
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## 🛠️ Development Setup
 
-## Running unit tests
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
+- Angular CLI
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Installation
 
-## Running end-to-end tests
+1. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+2. Start development server:
+```bash
+ng serve
+# or
+npm start
+```
 
-## Further help
+Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-# Skote-angular-18
+## 📁 Project Structure
+
+```
+src/app/
+├── admin/          # Admin role modules
+├── teacher/         # Teacher role modules
+├── student/         # Student role modules
+├── core/            # Core services, guards, interceptors
+├── shared/          # Shared components and utilities
+├── layouts/         # Layout components
+└── account/         # Authentication modules
+```
+
+## 🔐 Authentication
+
+The application uses JWT-based authentication with role-based access control (RBAC).
+
+## 🏗️ Build
+
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+For production build:
+```bash
+ng build --configuration production
+# or
+npm run build-prod
+```
+
+## 🧪 Testing
+
+Run unit tests:
+```bash
+ng test
+```
+
+Run end-to-end tests:
+```bash
+ng e2e
+```
+
+## 📚 Documentation
+
+- [Requirements Document](./SCHOOL_ERP_REQUIREMENTS.md)
+- [Implementation Guide](./IMPLEMENTATION_GUIDE.md)
+
+## 🔗 Backend
+
+The backend is built with Go Lang. See the backend repository for API documentation.
+
+## 📝 License
+
+This project is part of the School ERP System.
+
+## 🤝 Contributing
+
+This is a private project. For questions or issues, please contact the development team.
