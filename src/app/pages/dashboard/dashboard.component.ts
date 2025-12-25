@@ -1,11 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { TokenStorageService } from '../../core/services/token-storage.service';
+import { AuthenticationService } from '../../core/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  
+  constructor(
+    private router: Router,
+    private tokenStorage: TokenStorageService,
+    private authService: AuthenticationService
+  ) {}
+
+  ngOnInit() {
+    // Redirect to role-based dashboard
+    let userRole = 'admin';
+    
+    if (environment.defaultauth === 'jwt') {
+      const user: any = this.tokenStorage.getUser() || this.authService.currentUserValue;
+      userRole = user?.role || 'admin';
+    } else {
+      const currentUser: any = this.authService.currentUser();
+      userRole = currentUser?.role || 'admin';
+    }
+    
+    // Redirect based on role
+    if (userRole === 'admin') {
+      this.router.navigate(['/admin/dashboard']);
+    } else if (userRole === 'teacher') {
+      this.router.navigate(['/teacher/dashboard']);
+    } else if (userRole === 'student') {
+      this.router.navigate(['/student/dashboard']);
+    }
+    // If role is unknown or doesn't match, stay on current dashboard
+  }
   stats = [
     {
       title: 'Total Users',

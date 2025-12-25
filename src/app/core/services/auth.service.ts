@@ -1,51 +1,102 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, BehaviorSubject, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { getFirebaseBackend } from '../../authUtils';
 import { User } from 'src/app/store/Authentication/auth.models';
-import { from, map } from 'rxjs';
+import { ApiService } from './api.service';
+import { TokenStorageService } from './token-storage.service';
+import { environment } from '../../../environments/environment';
 
+export interface LoginResponse {
+  token: string;
+  user: {
+    id: number;
+    email: string;
+    role: string;
+  };
+}
 
 @Injectable({ providedIn: 'root' })
 
 export class AuthenticationService {
 
     user: User;
+    private currentUserSubject: BehaviorSubject<User | null>;
+    public currentUser$: Observable<User | null>;
 
-    constructor() {
+    constructor(
+        private api: ApiService,
+        private tokenStorage: TokenStorageService
+    ) {
+        const savedUser = this.tokenStorage.getUser();
+        this.currentUserSubject = new BehaviorSubject<User | null>(savedUser);
+        this.currentUser$ = this.currentUserSubject.asObservable();
     }
 
     /**
      * Returns the current user
      */
-    public currentUser(): User {
+    public currentUser(): User | null {
+        if (environment.defaultauth === 'jwt') {
+            return this.currentUserSubject.value;
+        }
         return getFirebaseBackend().getAuthenticatedUser();
     }
 
-
     /**
-     * Performs the auth
-     * @param email email of user
-     * @param password password of user
+     * Get current user value (synchronous)
      */
-    login(email: string, password: string) {
-        return from(getFirebaseBackend().loginUser(email, password).pipe(map(user => {
-            return user;
-        }
-        )));
+    public get currentUserValue(): User | null {
+        return this.currentUserSubject.value;
     }
 
     /**
-     * Performs the register
-     * @param email email
-     * @param password password
+     * Performs the auth - Real Backend API
+     * @param email email of user
+     * @param password password of user
      */
-    register(user: User) {
-        // return from(getFirebaseBackend().registerUser(user));
+    login(email: string, password: string): Observable<LoginResponse | any> {
+        if (environment.defaultauth === 'jwt') {
+            return this.api.post<LoginResponse>('auth/login', { email, password }).pipe(
+                map(response => {
+                    // Store token and user
+                    this.tokenStorage.saveToken(response.token);
+                    const user: any = {
+                        id: response.user.id,
+                        email: response.user.email,
+                        username: response.user.email,
+                        role: response.user.role,
+                        token: response.token
+                    };
+                    this.tokenStorage.saveUser(user);
+                    this.currentUserSubject.next(user);
+                    return response;
+                })
+            );
+        } else {
+            // Firebase or fake backend
+            return from(getFirebaseBackend().loginUser(email, password).pipe(map((user: any) => {
+                return user;
+            })));
+        }
+    }
 
-        return from(getFirebaseBackend().registerUser(user).then((response: any) => {
-            const user = response;
-            return user;
-        }));
+    /**
+     * Performs the register - Real Backend API
+     * @param user User object with email, password, role
+     */
+    register(user: { email: string; password: string; role: string }): Observable<any> {
+        if (environment.defaultauth === 'jwt') {
+            return this.api.post('auth/register', user);
+        } else {
+            // Firebase backend
+            return from(getFirebaseBackend().registerUser(user).then((response: any) => {
+                const user = response;
+                return user;
+            }));
+        }
     }
 
     /**
@@ -53,6 +104,10 @@ export class AuthenticationService {
      * @param email email
      */
     resetPassword(email: string) {
+        if (environment.defaultauth === 'jwt') {
+            // TODO: Implement password reset API endpoint
+            throw new Error('Password reset not implemented yet');
+        }
         return getFirebaseBackend().forgetPassword(email).then((response: any) => {
             const message = response.data;
             return message;
@@ -63,8 +118,12 @@ export class AuthenticationService {
      * Logout the user
      */
     logout() {
-        // logout the user
-        getFirebaseBackend().logout();
+        if (environment.defaultauth === 'jwt') {
+            this.tokenStorage.signOut();
+            this.currentUserSubject.next(null);
+        } else {
+            getFirebaseBackend().logout();
+        }
     }
 }
 

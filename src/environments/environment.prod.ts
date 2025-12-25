@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
-  defaultauth: 'fakebackend',
+  defaultauth: 'jwt',
+  apiUrl: 'https://api.yourschool.com/api', // Update with your production API URL
   firebaseConfig: {
     apiKey: '',
     authDomain: '',

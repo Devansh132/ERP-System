@@ -1,0 +1,141 @@
+<app-page-title [title]="(isEditMode ? 'Edit' : 'Add') + ' Student'" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+          <!-- Error Message -->
+          <div class="alert alert-danger" *ngIf="error">
+            {{ error }}
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">User <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="user_id" [class.is-invalid]="studentForm.get('user_id')?.invalid && studentForm.get('user_id')?.touched">
+                <option value="">Select User</option>
+                <option *ngFor="let user of users" [value]="user.id">{{ user.email }} ({{ user.role | titlecase }})</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="studentForm.get('user_id')?.invalid && studentForm.get('user_id')?.touched">
+                User is required
+              </div>
+              <small class="form-text text-muted" *ngIf="users.length === 0">No users available. Please create a user first.</small>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Admission Number <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="admission_number" 
+                     [class.is-invalid]="studentForm.get('admission_number')?.invalid && studentForm.get('admission_number')?.touched">
+              <div class="invalid-feedback" *ngIf="studentForm.get('admission_number')?.invalid && studentForm.get('admission_number')?.touched">
+                Admission number is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">First Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="first_name"
+                     [class.is-invalid]="studentForm.get('first_name')?.invalid && studentForm.get('first_name')?.touched">
+              <div class="invalid-feedback" *ngIf="studentForm.get('first_name')?.invalid && studentForm.get('first_name')?.touched">
+                First name is required
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Last Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="last_name"
+                     [class.is-invalid]="studentForm.get('last_name')?.invalid && studentForm.get('last_name')?.touched">
+              <div class="invalid-feedback" *ngIf="studentForm.get('last_name')?.invalid && studentForm.get('last_name')?.touched">
+                Last name is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" formControlName="date_of_birth"
+                     [class.is-invalid]="studentForm.get('date_of_birth')?.invalid && studentForm.get('date_of_birth')?.touched">
+              <div class="invalid-feedback" *ngIf="studentForm.get('date_of_birth')?.invalid && studentForm.get('date_of_birth')?.touched">
+                Date of birth is required
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Gender</label>
+              <select class="form-select" formControlName="gender">
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Class <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="class_id" (change)="onClassChange()"
+                     [class.is-invalid]="studentForm.get('class_id')?.invalid && studentForm.get('class_id')?.touched">
+                <option value="">Select Class</option>
+                <option *ngFor="let cls of classes" [value]="cls.id">{{ cls.name }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="studentForm.get('class_id')?.invalid && studentForm.get('class_id')?.touched">
+                Class is required
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Section <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="section_id"
+                     [class.is-invalid]="studentForm.get('section_id')?.invalid && studentForm.get('section_id')?.touched">
+                <option value="">Select Section</option>
+                <option *ngFor="let section of sections" [value]="section.id">{{ section.name }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="studentForm.get('section_id')?.invalid && studentForm.get('section_id')?.touched">
+                Section is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Phone</label>
+              <input type="text" class="form-control" formControlName="phone">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-control" formControlName="address">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Parent Name</label>
+              <input type="text" class="form-control" formControlName="parent_name">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Parent Phone</label>
+              <input type="text" class="form-control" formControlName="parent_phone">
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12 text-end">
+              <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="loading || studentForm.invalid">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                {{ isEditMode ? 'Update' : 'Create' }} Student
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

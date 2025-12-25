@@ -1,5 +1,7 @@
 import { MenuItem } from './menu.model';
 
+// Commented out default menu - will be replaced with role-based menus
+/*
 export const MENU: MenuItem[] = [
     {
         id: 1,
@@ -910,4 +912,204 @@ export const MENU: MenuItem[] = [
         ]
     }
 ];
+*/
+
+// Role-based menu functions
+export const getMenuByRole = (role: string): MenuItem[] => {
+    switch(role) {
+        case 'admin':
+            return ADMIN_MENU;
+        case 'teacher':
+            return TEACHER_MENU;
+        case 'student':
+            return STUDENT_MENU;
+        default:
+            return [];
+    }
+};
+
+// Admin Menu
+export const ADMIN_MENU: MenuItem[] = [
+    {
+        id: 1,
+        label: 'MENUITEMS.MENU.TEXT',
+        isTitle: true
+    },
+    {
+        id: 2,
+        label: 'Dashboard',
+        icon: 'bx-home-circle',
+        link: '/admin/dashboard',
+    },
+    {
+        id: 3,
+        isLayout: true
+    },
+    {
+        id: 4,
+        label: 'User Management',
+        isTitle: true
+    },
+    {
+        id: 5,
+        label: 'Users',
+        icon: 'bx-user-circle',
+        link: '/admin/users/list',
+    },
+    {
+        id: 6,
+        label: 'Student Management',
+        isTitle: true
+    },
+    {
+        id: 7,
+        label: 'Students',
+        icon: 'bx-user',
+        link: '/admin/students',
+    },
+    {
+        id: 8,
+        label: 'Teacher Management',
+        isTitle: true
+    },
+    {
+        id: 9,
+        label: 'Teachers',
+        icon: 'bx-user-voice',
+        link: '/admin/teachers',
+    },
+    {
+        id: 10,
+        label: 'Academic Management',
+        isTitle: true
+    },
+    {
+        id: 11,
+        label: 'Classes',
+        icon: 'bx-book',
+        link: '/admin/classes',
+    },
+    {
+        id: 12,
+        label: 'Sections',
+        icon: 'bx-group',
+        link: '/admin/sections',
+    },
+    {
+        id: 13,
+        label: 'Subjects',
+        icon: 'bx-book-open',
+        link: '/admin/subjects',
+    },
+    // More admin menu items will be added as we implement features
+];
+
+// Teacher Menu
+export const TEACHER_MENU: MenuItem[] = [
+    {
+        id: 1,
+        label: 'MENUITEMS.MENU.TEXT',
+        isTitle: true
+    },
+    {
+        id: 2,
+        label: 'Dashboard',
+        icon: 'bx-home-circle',
+        link: '/teacher/dashboard',
+    },
+    {
+        id: 3,
+        isLayout: true
+    },
+    {
+        id: 4,
+        label: 'My Classes',
+        icon: 'bx-book',
+        link: '/teacher/classes',
+    },
+    {
+        id: 5,
+        label: 'Students',
+        icon: 'bx-user',
+        link: '/teacher/students',
+    },
+    {
+        id: 6,
+        label: 'Attendance',
+        icon: 'bx-check-square',
+        link: '/teacher/attendance',
+    },
+    {
+        id: 7,
+        label: 'Marks & Exams',
+        icon: 'bx-file',
+        link: '/teacher/marks',
+    },
+    {
+        id: 8,
+        label: 'Assignments',
+        icon: 'bx-task',
+        link: '/teacher/assignments',
+    },
+    // More teacher menu items will be added as we implement features
+];
+
+// Student Menu
+export const STUDENT_MENU: MenuItem[] = [
+    {
+        id: 1,
+        label: 'MENUITEMS.MENU.TEXT',
+        isTitle: true
+    },
+    {
+        id: 2,
+        label: 'Dashboard',
+        icon: 'bx-home-circle',
+        link: '/student/dashboard',
+    },
+    {
+        id: 3,
+        isLayout: true
+    },
+    {
+        id: 4,
+        label: 'My Profile',
+        icon: 'bx-user',
+        link: '/student/profile',
+    },
+    {
+        id: 5,
+        label: 'Attendance',
+        icon: 'bx-check-square',
+        link: '/student/attendance',
+    },
+    {
+        id: 6,
+        label: 'Marks & Grades',
+        icon: 'bx-file',
+        link: '/student/marks',
+    },
+    {
+        id: 7,
+        label: 'Assignments',
+        icon: 'bx-task',
+        link: '/student/assignments',
+    },
+    {
+        id: 8,
+        label: 'Timetable',
+        icon: 'bx-calendar',
+        link: '/student/timetable',
+    },
+    {
+        id: 9,
+        label: 'Notices',
+        icon: 'bx-bell',
+        link: '/student/notices',
+    },
+    // More student menu items will be added as we implement features
+];
+
+// Default menu (for backward compatibility)
+export const MENU: MenuItem[] = ADMIN_MENU;
 

@@ -1,0 +1,57 @@
+<app-page-title [title]="(isEditMode ? 'Edit' : 'Add') + ' Section'" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="sectionForm" (ngSubmit)="onSubmit()">
+          <!-- Error Message -->
+          <div class="alert alert-danger" *ngIf="error">
+            {{ error }}
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Class <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="class_id"
+                     [class.is-invalid]="sectionForm.get('class_id')?.invalid && sectionForm.get('class_id')?.touched">
+                <option value="">Select Class</option>
+                <option *ngFor="let cls of classes" [value]="cls.id">{{ cls.name }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="sectionForm.get('class_id')?.invalid && sectionForm.get('class_id')?.touched">
+                Class is required
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Section Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="name"
+                     [class.is-invalid]="sectionForm.get('name')?.invalid && sectionForm.get('name')?.touched">
+              <div class="invalid-feedback" *ngIf="sectionForm.get('name')?.invalid && sectionForm.get('name')?.touched">
+                Section name is required
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Capacity</label>
+              <input type="number" class="form-control" formControlName="capacity" min="1">
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12 text-end">
+              <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="loading || sectionForm.invalid">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                {{ isEditMode ? 'Update' : 'Create' }} Section
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

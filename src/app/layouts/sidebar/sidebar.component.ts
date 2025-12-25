@@ -5,11 +5,14 @@ import { Router, NavigationEnd, RouterModule } from '@angular/router';
 
 import { HttpClient } from '@angular/common/http';
 
-import { MENU } from './menu';
+import { MENU, getMenuByRole } from './menu';
 import { MenuItem } from './menu.model';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { CommonModule } from '@angular/common';
+import { TokenStorageService } from '../../core/services/token-storage.service';
+import { AuthenticationService } from '../../core/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,7 +35,14 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild('sideMenu') sideMenu: ElementRef;
 
-  constructor(private eventService: EventService, private router: Router, public translate: TranslateService, private http: HttpClient) {
+  constructor(
+    private eventService: EventService, 
+    private router: Router, 
+    public translate: TranslateService, 
+    private http: HttpClient,
+    private tokenStorage: TokenStorageService,
+    private authService: AuthenticationService
+  ) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenuDropdown();
@@ -140,10 +150,27 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /**
-   * Initialize
+   * Initialize - Load menu based on user role
    */
   initialize(): void {
-    this.menuItems = MENU;
+    // Get user role and load appropriate menu
+    let userRole = 'admin'; // Default
+    
+    if (environment.defaultauth === 'jwt') {
+      const user: any = this.tokenStorage.getUser() || this.authService.currentUserValue;
+      userRole = user?.role || 'admin';
+    } else {
+      const currentUser: any = this.authService.currentUser();
+      userRole = currentUser?.role || 'admin';
+    }
+    
+    // Load menu based on role
+    this.menuItems = getMenuByRole(userRole);
+    
+    // If no menu found, use default
+    if (!this.menuItems || this.menuItems.length === 0) {
+      this.menuItems = MENU;
+    }
   }
 
   /**

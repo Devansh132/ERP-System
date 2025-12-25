@@ -1,0 +1,94 @@
+<app-page-title [title]="'Admin Dashboard'" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+<div class="row">
+  <div class="col-xl-3 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-shrink-0">
+            <div class="avatar-sm rounded bg-primary bg-soft">
+              <span class="avatar-title bg-primary rounded-circle">
+                <i class="bx bx-user font-size-24"></i>
+              </span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <p class="text-uppercase fw-medium text-muted mb-0">Total Students</p>
+            <h4 class="mb-0">{{ stats.totalStudents }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-shrink-0">
+            <div class="avatar-sm rounded bg-success bg-soft">
+              <span class="avatar-title bg-success rounded-circle">
+                <i class="bx bx-user-circle font-size-24"></i>
+              </span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <p class="text-uppercase fw-medium text-muted mb-0">Total Teachers</p>
+            <h4 class="mb-0">{{ stats.totalTeachers }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-shrink-0">
+            <div class="avatar-sm rounded bg-info bg-soft">
+              <span class="avatar-title bg-info rounded-circle">
+                <i class="bx bx-book font-size-24"></i>
+              </span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <p class="text-uppercase fw-medium text-muted mb-0">Total Classes</p>
+            <h4 class="mb-0">{{ stats.totalClasses }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="flex-shrink-0">
+            <div class="avatar-sm rounded bg-warning bg-soft">
+              <span class="avatar-title bg-warning rounded-circle">
+                <i class="bx bx-group font-size-24"></i>
+              </span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <p class="text-uppercase fw-medium text-muted mb-0">Total Sections</p>
+            <h4 class="mb-0">{{ stats.totalSections }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="loading">
+  <div class="col-12">
+    <div class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+

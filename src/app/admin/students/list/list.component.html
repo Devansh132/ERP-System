@@ -1,0 +1,107 @@
+<app-page-title [title]="'Students'" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <h4 class="card-title mb-0">Students List</h4>
+          </div>
+          <div class="col-md-6 text-end">
+            <button type="button" class="btn btn-primary" (click)="addStudent()">
+              <i class="bx bx-plus me-1"></i> Add Student
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Filter by Class</label>
+            <select class="form-select" [(ngModel)]="selectedClassId" (change)="onFilterChange()">
+              <option [ngValue]="null">All Classes</option>
+              <!-- Class options will be loaded dynamically -->
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Filter by Section</label>
+            <select class="form-select" [(ngModel)]="selectedSectionId" (change)="onFilterChange()">
+              <option [ngValue]="null">All Sections</option>
+              <!-- Section options will be loaded dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div class="alert alert-danger" *ngIf="error">
+          {{ error }}
+        </div>
+
+        <!-- Loading -->
+        <div class="text-center" *ngIf="loading">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <!-- Students Table -->
+        <div class="table-responsive" *ngIf="!loading && students.length > 0">
+          <table class="table table-bordered table-striped table-nowrap align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Admission No.</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of students">
+                <td>{{ student.admission_number }}</td>
+                <td>{{ student.first_name }} {{ student.last_name }}</td>
+                <td>{{ student.user?.email || 'N/A' }}</td>
+                <td>{{ student.class?.name || 'N/A' }}</td>
+                <td>{{ student.section?.name || 'N/A' }}</td>
+                <td>
+                  <span class="badge bg-success" *ngIf="student.status === 'active'">Active</span>
+                  <span class="badge bg-danger" *ngIf="student.status !== 'active'">Inactive</span>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-primary me-1" (click)="editStudent(student.id)">
+                    <i class="bx bx-edit"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-danger" (click)="deleteStudent(student.id)">
+                    <i class="bx bx-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div class="text-center py-5" *ngIf="!loading && students.length === 0">
+          <p class="text-muted">No students found.</p>
+          <button type="button" class="btn btn-primary" (click)="addStudent()">
+            <i class="bx bx-plus me-1"></i> Add First Student
+          </button>
+        </div>
+
+        <!-- Pagination -->
+        <div class="row mt-3" *ngIf="!loading && students.length > 0">
+          <div class="col-md-6">
+            <p class="text-muted">Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to {{ currentPage * itemsPerPage }} of {{ totalItems }} entries</p>
+          </div>
+          <div class="col-md-6">
+            <!-- Pagination component will be added -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
