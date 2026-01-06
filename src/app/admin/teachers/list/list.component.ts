@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { TeachersService, Teacher } from '../../../core/services/teachers.service';
 import { PagetitleComponent } from 'src/app/shared/ui/pagetitle/pagetitle.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-teacher-list',
@@ -13,11 +15,12 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit {
+export class ListComponent implements OnInit, OnDestroy {
   breadCrumbItems: Array<{ label: string; link?: string; active?: boolean }>;
   teachers: Teacher[] = [];
   loading = false;
   error: string | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private teachersService: TeachersService,
@@ -32,6 +35,24 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTeachers();
+    
+    // Reload teachers when navigating back to this page
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((event: NavigationEnd) => {
+        const url = event.urlAfterRedirects || event.url;
+        if (url.includes('/admin/teachers/list') && !url.includes('/add') && !url.includes('/edit')) {
+          this.loadTeachers();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadTeachers(): void {

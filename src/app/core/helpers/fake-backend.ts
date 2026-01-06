@@ -11,6 +11,11 @@ export class FakeBackendInterceptor implements HttpInterceptor {
     constructor() { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        // Skip fake backend for real API calls (those containing /api/)
+        if (request.url.includes('/api/')) {
+            return next.handle(request);
+        }
+
         // array in local storage for registered users
         // tslint:disable-next-line: max-line-length
         const users: any[] = JSON.parse(localStorage.getItem('users')!) || [{ username: 'admin', email: 'admin@themesbrand.com', password: '123456' }];

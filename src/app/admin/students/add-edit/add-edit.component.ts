@@ -129,14 +129,23 @@ export class AddEditComponent implements OnInit {
   }
 
   loadUsers(): void {
-    // Load all users for student creation (user can have any role, will be linked to student)
-    this.usersService.getUsers().subscribe({
+    // Load users with role 'student' for student creation
+    this.usersService.getUsers({ role: 'student' }).subscribe({
       next: (users) => {
         this.users = users;
       },
-      error: (error) => {
-        console.error('Error loading users:', error);
-        this.toastr.error(error?.error?.error || error?.error || 'Failed to load users', 'Error');
+      error: (err) => {
+        // If filtering by role fails, try loading all users as fallback
+        this.usersService.getUsers().subscribe({
+          next: (allUsers) => {
+            // Filter to only show students manually
+            this.users = allUsers.filter(user => user.role === 'student');
+          },
+          error: (error) => {
+            this.toastr.error(error?.error?.error || error?.error || 'Failed to load users.', 'Error');
+            console.error(error);
+          }
+        });
       }
     });
   }
