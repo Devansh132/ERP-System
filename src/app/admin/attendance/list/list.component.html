@@ -1,0 +1,56 @@
+<app-page-title [title]="'Attendance List'" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <!-- Loading -->
+        <div class="text-center" *ngIf="loading">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="table-responsive" *ngIf="!loading && attendances.length > 0">
+          <table class="table table-bordered table-striped table-nowrap align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Student</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let attendance of attendances">
+                <td>{{ attendance.date | date:'short' }}</td>
+                <td>
+                  <span *ngIf="attendance.student">
+                    {{ attendance.student.first_name }} {{ attendance.student.last_name }}
+                    <small class="text-muted d-block">{{ attendance.student.admission_number }}</small>
+                  </span>
+                  <span *ngIf="!attendance.student">N/A</span>
+                </td>
+                <td>{{ attendance.class?.name || 'N/A' }}</td>
+                <td>{{ attendance.section?.name || 'N/A' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getStatusBadgeClass(attendance.status)">
+                    {{ attendance.status | titlecase }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div class="text-center py-5" *ngIf="!loading && attendances.length === 0">
+          <p class="text-muted">No attendance records found.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

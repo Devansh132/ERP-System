@@ -1001,7 +1001,29 @@ export const ADMIN_MENU: MenuItem[] = [
         icon: 'bx-book-open',
         link: '/admin/subjects',
     },
-    // More admin menu items will be added as we implement features
+    {
+        id: 14,
+        label: 'Attendance',
+        isTitle: true
+    },
+    {
+        id: 15,
+        label: 'Mark Attendance',
+        icon: 'bx-calendar-check',
+        link: '/admin/attendance/mark',
+    },
+    {
+        id: 16,
+        label: 'Attendance Reports',
+        icon: 'bx-chart',
+        link: '/admin/attendance/reports',
+    },
+    {
+        id: 17,
+        label: 'Attendance List',
+        icon: 'bx-list-ul',
+        link: '/admin/attendance/list',
+    },
 ];
 
 // Teacher Menu

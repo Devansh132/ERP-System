@@ -1,0 +1,86 @@
+<app-page-title [title]="'Attendance Reports'" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="reportForm" (ngSubmit)="generateReport()">
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <label class="form-label">Class</label>
+              <select class="form-select" formControlName="class_id">
+                <option value="">All Classes</option>
+                <option *ngFor="let cls of classes" [value]="cls.id">{{ cls.name }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Section</label>
+              <select class="form-select" formControlName="section_id"
+                     [disabled]="!reportForm.get('class_id')?.value">
+                <option value="">All Sections</option>
+                <option *ngFor="let section of filteredSections" [value]="section.id">{{ section.name }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">Start Date</label>
+              <input type="date" class="form-control" formControlName="start_date">
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">End Date</label>
+              <input type="date" class="form-control" formControlName="end_date">
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary" [disabled]="loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                <i class="bx bx-chart me-1"></i> Generate Report
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Statistics Display -->
+        <div class="row" *ngIf="statistics">
+          <div class="col-md-3">
+            <div class="card bg-primary text-white">
+              <div class="card-body">
+                <h5 class="card-title">Total Days</h5>
+                <h2>{{ statistics.total }}</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-success text-white">
+              <div class="card-body">
+                <h5 class="card-title">Present</h5>
+                <h2>{{ statistics.present }}</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-danger text-white">
+              <div class="card-body">
+                <h5 class="card-title">Absent</h5>
+                <h2>{{ statistics.absent }}</h2>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card bg-info text-white">
+              <div class="card-body">
+                <h5 class="card-title">Attendance %</h5>
+                <h2>{{ statistics.percentage | number:'1.2-2' }}%</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

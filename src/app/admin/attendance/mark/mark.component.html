@@ -1,0 +1,119 @@
+<app-page-title [title]="'Mark Attendance'" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form [formGroup]="attendanceForm" (ngSubmit)="onSubmit()">
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <label class="form-label">Class <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="class_id"
+                     [class.is-invalid]="attendanceForm.get('class_id')?.invalid && attendanceForm.get('class_id')?.touched">
+                <option value="">Select Class</option>
+                <option *ngFor="let cls of classes" [value]="cls.id">{{ cls.name }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="attendanceForm.get('class_id')?.invalid && attendanceForm.get('class_id')?.touched">
+                Class is required
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Section <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="section_id"
+                     [class.is-invalid]="attendanceForm.get('section_id')?.invalid && attendanceForm.get('section_id')?.touched"
+                     [disabled]="!attendanceForm.get('class_id')?.value">
+                <option value="">Select Section</option>
+                <option *ngFor="let section of filteredSections" [value]="section.id">{{ section.name }}</option>
+              </select>
+              <div class="invalid-feedback" *ngIf="attendanceForm.get('section_id')?.invalid && attendanceForm.get('section_id')?.touched">
+                Section is required
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Date <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" formControlName="date"
+                     [class.is-invalid]="attendanceForm.get('date')?.invalid && attendanceForm.get('date')?.touched">
+              <div class="invalid-feedback" *ngIf="attendanceForm.get('date')?.invalid && attendanceForm.get('date')?.touched">
+                Date is required
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="row mb-3" *ngIf="students.length > 0">
+            <div class="col-12">
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-success" (click)="setAllStatus('present')">
+                  <i class="bx bx-check"></i> Mark All Present
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" (click)="setAllStatus('absent')">
+                  <i class="bx bx-x"></i> Mark All Absent
+                </button>
+                <button type="button" class="btn btn-sm btn-warning" (click)="setAllStatus('late')">
+                  <i class="bx bx-time"></i> Mark All Late
+                </button>
+                <button type="button" class="btn btn-sm btn-info" (click)="setAllStatus('excused')">
+                  <i class="bx bx-calendar-check"></i> Mark All Excused
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div class="text-center" *ngIf="loading">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <!-- Students List -->
+          <div class="table-responsive" *ngIf="!loading && students.length > 0">
+            <table class="table table-bordered table-striped table-nowrap align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Admission No.</th>
+                  <th>Student Name</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let student of students">
+                  <td>{{ student.admission_number }}</td>
+                  <td>{{ student.first_name }} {{ student.last_name }}</td>
+                  <td>
+                    <select class="form-select form-select-sm" 
+                            [(ngModel)]="attendanceStatus[student.id!]"
+                            [ngModelOptions]="{standalone: true}">
+                      <option value="present">Present</option>
+                      <option value="absent">Absent</option>
+                      <option value="late">Late</option>
+                      <option value="excused">Excused</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div class="text-center py-5" *ngIf="!loading && students.length === 0 && attendanceForm.get('section_id')?.value">
+            <p class="text-muted">No students found for the selected class and section.</p>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="row mt-4" *ngIf="students.length > 0">
+            <div class="col-12 text-end">
+              <button type="submit" class="btn btn-primary" [disabled]="loading || attendanceForm.invalid">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                <i class="bx bx-save me-1"></i> Save Attendance
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
